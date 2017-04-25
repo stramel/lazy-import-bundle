@@ -15,6 +15,7 @@
 const del = require('del');
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
+const filter = require('gulp-filter');
 const mergeStream = require('merge-stream');
 const polymerBuild = require('polymer-build');
 
@@ -32,6 +33,13 @@ const swPrecacheConfig = require('./sw-precache-config.js');
 const polymerJson = require('./polymer.json');
 const polymerProject = new polymerBuild.PolymerProject(polymerJson);
 const buildDirectory = 'build';
+
+const jsMaritzDepsFilter = filter([
+  'bower_components/mtz-*/**/*.js',
+  'bower_components/hc-*/**/*.js',
+  'bower_components/paper-multi-select/**/*.js',
+  'bower_components/lazy-imports/*.js'
+], {restore: true});
 
 const cssOptions = {};
 
@@ -105,7 +113,12 @@ function build() {
         let dependenciesStream = polymerProject.dependencies()
           .pipe(dependenciesStreamSplitter.split())
           // Add any dependency optimizations here.
-          .pipe(gulpif(/\.js$/, babel()))
+          .pipe(jsMaritzDepsFilter)
+          .pipe(babel({
+            presets: ['es2015-script'],
+            plugins: ['array-includes']
+          }))
+          .pipe(jsMaritzDepsFilter.restore)
           .pipe(gulpif(/\.js$/, uglify()))
           // .pipe(gulpif(/\.css$/, cssSlam()))
           .pipe(gulpif(/\.css$/, postcss([

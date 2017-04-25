@@ -20,7 +20,8 @@
     "SpinKit": "spinkit#^1.2.5",
     "normalize-css": "^5.0.0",
     "babel-polyfill": "^0.0.1",
-    "lazy-imports": "Polymer/lazy-imports#master"
+    "lazy-imports": "Polymer/lazy-imports#master",
+    "vaadin-grid": "vaadin/vaadin-grid#^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

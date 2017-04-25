@@ -9,10 +9,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/lazy-imports/lazy-imports-behavior.html">
 <link rel="import" href="../../theme/shared-styles.html">
 <link rel="import" href="../../behaviors/app-localize-behavior.html">
 
-<dom-module id="my-page-view1">
+<dom-module id="my-page-view2">
+  <link rel="lazy-import" group="lazyUpload" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
   <template>
     <style include="shared-styles">
       :host {
@@ -23,16 +25,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <div class="card">
-      <div class="circle">1</div>
-      <h1>View One</h1>
-      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+      <div class="circle">2</div>
+      <h1>View Two</h1>
+      <vaadin-grid aria-label="Array Data Example" items="[[items]]">
+
+      <vaadin-grid-column width="50px" flex-grow="0">
+        <template class="header">#</template>
+        <template>[[index]]</template>
+      </vaadin-grid-column>
+
+      <vaadin-grid-column>
+        <template class="header">First Name</template>
+        <template>[[item.firstName]]</template>
+      </vaadin-grid-column>
+
+      <vaadin-grid-column>
+        <template class="header">Last Name</template>
+        <template>[[item.lastName]]</template>
+      </vaadin-grid-column>
+
+    </vaadin-grid>
     </div>
   </template>
 
   <script>
     Polymer({
-      is: 'my-page-view1',
+      is: 'my-page-view2',
 
       properties: {
         active: {
@@ -41,6 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_activeChanged'
         },
         app: Object,
+        items: Array,
         _isLocalesLoaded: {
           type: Boolean,
           value: false
@@ -48,11 +67,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       behaviors: [
-        AppBehaviors.AppLocalizeBehavior
+        AppBehaviors.AppLocalizeBehavior,
+        Polymer.LazyImportsBehavior
       ],
 
       listeners: {
         'app-resources-loaded': '_onLocalesLoaded'
+      },
+
+      ready() {
+        this.debounce('initialization', () => {
+          this.importLazyGroup('lazyUpload').then(() => {
+            var items = [];
+
+            for (var i = 0; i < 100; i++) {
+              items.push({firstName: 'First Name ' + i, lastName: 'Last Name ' + i});
+            }
+
+            this.items = items;
+          });
+        });
       },
 
       _activeChanged() {
