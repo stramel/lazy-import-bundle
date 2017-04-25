@@ -1,0 +1,145 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<script>
+  // Create namespace for app behaviors
+  window.AppBehaviors = window.AppBehaviors || {};
+  window.AppConfigs = window.AppConfigs || {};
+
+</script>
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="behaviors/app-localize-behavior.html">
+<link rel="import" href="config/app-config-endpoints.html">
+<link rel="import" href="shell/app-shell.html">
+<link rel="import" href="app-breakpoints.html">
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 20px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+    </style>
+
+    <app-location route="{{_route}}"></app-location>
+    <app-route
+      route="{{_route}}"
+      pattern="/:page"
+      data="{{_routeData}}"
+    ></app-route>
+
+    <app-shell id="shell"
+      app="{{app}}"
+      page="[[page]]"
+      route="{{_route}}"
+    ></app-shell>
+
+    <app-breakpoints
+      app="{{app}}"
+    ></app-breakpoints>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-app',
+
+      behaviors: [
+        AppBehaviors.AppLocalizeBehavior
+      ],
+
+      properties: {
+        app: {
+          type: Object,
+          value: {
+            currentUser: {},
+            pageTitle: '',
+            userAuthEmail: '',
+
+            // Additional Configs
+            config: AppConfigs,
+
+            // Settings
+            enforceLogin: true,
+
+            // Responsive handlers using Material Design breakpoints
+            // http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
+            isTabletWide: window.matchMedia('screen and (min-width:600px)').matches,
+            isLaptopWide: window.matchMedia('screen and (min-width:960px)').matches,
+            isLargeWide: window.matchMedia('screen and (min-width:1600px)').matches,
+            isPrintMode: window.matchMedia('print').matches,
+            isOffline: !navigator.onLine
+          }
+        },
+        page: String,
+        _routeData: Object
+      },
+
+      observers: [
+        '_routePageChanged(_routeData.page)'
+      ],
+
+      created() {
+        this.removeAttribute('unresolved');
+      },
+      ready() {
+        // Listen for online/offline network status
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          this.listen(window, 'online', '_notifyNetworkStatus');
+          this.listen(window, 'offline', '_notifyNetworkStatus');
+        });
+      },
+
+      _routePageChanged(page) {
+        if (page) {
+          // Ensures the page exists
+          if (this.$.shell.$.pages.$[page]) {
+            this.page = page;
+          } else {
+            this.page = '404';
+          }
+        } else {
+          this.page = 'home';
+        }
+      }
+    });
+
+  </script>
+</dom-module>

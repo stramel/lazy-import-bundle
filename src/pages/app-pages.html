@@ -1,0 +1,79 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<dom-module id="app-pages">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+      .page {
+        opacity: 0;
+        transition: 0.5s opacity;
+      }
+    </style>
+    <iron-pages
+      selected="[[page]]"
+      selected-attribute="active"
+      attr-for-selected="id"
+      fallback-selection="404"
+      role="main">
+
+      <my-page-view1 id="home" class="page" app="{{app}}"></my-page-view1>
+      <my-page-view404 id="404" class="page" app="{{app}}"></my-page-view404>
+
+    </iron-pages>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'app-pages',
+
+      properties: {
+        app: Object,
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+        route: Object
+      },
+
+      _pageChanged(page) {
+        if (Polymer.isInstance(this.$[page])) {
+          this.async(() => {
+            this._pageLoaded();
+          });
+        } else {
+          // Async load page import on demand.
+          this.importHref(
+            this.resolveUrl(`${this.$[page].localName}/${this.$[page].localName}.html`),
+            this._pageLoaded,
+            this._pageFailed,
+            true
+          );
+        }
+      },
+      _pageLoaded() {
+        this.$[this.page].style.opacity = 1;
+      },
+      _pageFailed() {
+        this.page = '404';
+      }
+
+    });
+
+  </script>
+</dom-module>

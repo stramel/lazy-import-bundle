@@ -1,0 +1,85 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/lazy-imports/lazy-imports-behavior.html">
+<link rel="import" href="../../theme/shared-styles.html">
+<link rel="import" href="../../behaviors/app-localize-behavior.html">
+
+<dom-module id="my-page-view1">
+  <link rel="lazy-import" group="lazyUpload" href="../paper-icon-button/paper-icon-button.html">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <div class="circle">1</div>
+      <h1>View One</h1>
+      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-page-view1',
+
+      properties: {
+        active: {
+          type: Boolean,
+          value: false,
+          observer: '_activeChanged'
+        },
+        app: Object,
+        _isLocalesLoaded: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      behaviors: [
+        AppBehaviors.AppLocalizeBehavior
+      ],
+
+      listeners: {
+        'app-resources-loaded': '_onLocalesLoaded'
+      },
+
+      ready() {
+        this.debounce('initialization', () => {
+          this.importLazyGroup('lazyUpload');
+        });
+      },
+
+      _activeChanged() {
+        if (this.active) {
+          if (this._isLocalesLoaded) {
+            this.set('app.pageTitle', this.localize('home'));
+          } else {
+            this.loadLocales(this.is);
+          }
+        }
+      },
+
+      _onLocalesLoaded(event) {
+        event.stopPropagation();
+        this._isLocalesLoaded = true;
+        // TODO: Resolve slow localize data binding in Firefox
+        // this.style.display = 'block';
+        this.set('app.pageTitle', this.localize('home'));
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,72 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-localize-behavior/app-localize-behavior.html">
+
+<script>
+  // Ensure the namespace exists
+  window.AppBehaviors = window.AppBehaviors || {};
+
+  /**
+   * @polymerBehavior AppBehaviors.AppLocalizeBehavior
+   */
+  AppBehaviors.AppLocalizeBehavior = [Polymer.AppLocalizeBehavior, {
+
+    __defaultLocale: 'en',
+
+    __locales: ['en'],
+
+    properties: {
+      /* Overriden from Polymer.AppLocalizeBehavior */
+      formats: {
+        type: Object,
+        value() {
+          return {
+            number: {
+              USD: {
+                style: 'currency',
+                currency: 'USD'
+              }
+            }
+          };
+        }
+      },
+
+      /* Overriden from Polymer.AppLocalizeBehavior */
+      language: {
+        type: String,
+        value() {
+          const proto = this.constructor.prototype;
+
+          // http://stackoverflow.com/a/38150585/1614237
+          let lang = navigator.languages && navigator.languages[0] ||  // Chrome / Firefox
+                     navigator.language;  // All browsers
+
+          if (lang.indexOf('-') !== -1) {
+            lang = lang.split('-')[0];
+          }
+
+          if (proto.__locales.indexOf(lang) === -1) {
+            lang = proto.__defaultLocale;
+          }
+
+          return lang;
+        }
+      }
+    },
+
+    loadLocales(element) {
+      this.loadResources(`/data/locales/${this.language}/${element}.json`);
+    }
+
+  }];
+
+</script>

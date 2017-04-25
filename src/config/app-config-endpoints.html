@@ -1,0 +1,46 @@
+<script>
+
+  const AppEndpoints = {
+    apiBase: {
+      protocol: 'https:',
+      subdomain: 'subdomain',
+      apiSuffix: 'api',
+      domain: 'domain.com'
+    }
+  };
+
+  /**
+   * Resolves the base url for API rest calls by appending an apiSuffix as needed.
+   */
+  function resolveApiBaseUrl() {
+    const config = AppEndpoints.apiBase;
+    let {protocol, port = ''} = window.location;
+    const domainParts = window.location.hostname.split('.');
+
+    // Localhost
+    if (domainParts.includes('localhost')) {
+      // We have 2 cases "localhost" and "subdomain.localhost"
+      if (domainParts.length > 1) domainParts[0] = domainParts[0].concat(`-${config.apiSuffix}`);
+      else domainParts.unshift(config.subdomain);
+
+      // The last part will always be localhost since that's what determines the machine it's routed to, replace it
+      domainParts[domainParts.length - 1] = config.domain;
+      port = '';
+      protocol = config.protocol;
+    } else if (domainParts.length === 2) {
+      // TODO: Drop the below cases when NGINX is doing the hosted redirects
+      // This is all of our other environments: "sub.domain.com" or "domain.com"
+      domainParts.unshift(config.apiSuffix);
+    } else {
+      domainParts[0] = domainParts[0].concat(`-${config.apiSuffx}`);
+    }
+
+    const domain = domainParts.join('.');
+    AppEndpoints.apiBaseUrl = `${protocol}//${domain}${port}`;
+  }
+
+  resolveApiBaseUrl();
+
+  window.AppConfigs.endpoints = AppEndpoints;
+
+</script>

@@ -1,0 +1,24 @@
+{
+  "extends": ["eslint:recommended", "google"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "plugins": [
+    "chai-expect",
+    "html"
+  ],
+  "rules": {
+    "no-var": "off",
+    "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }],
+    "max-len": [1, 120, 2, { "ignoreComments": true }],
+    "comma-dangle": 0
+  },
+  "globals": {
+    "Polymer": true,
+    "AppBehaviors": true,
+    "AppConfigs": true,
+    "expect": true
+  }
+}
