@@ -5,7 +5,8 @@
     "src/pages/my-page-view1/my-page-view1.html",
     "src/pages/my-page-view2/my-page-view2.html",
     "src/pages/my-page-view404/my-page-view404.html",
-    "bower_components/paper-icon-button/paper-icon-button.html"
+    "bower_components/paper-icon-button/paper-icon-button.html",
+    "bower_components/vaadin-grid/vaadin-grid.html"
   ],
   "sources": [
     "data/**/*",
