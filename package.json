@@ -26,9 +26,7 @@
     "gulp-posthtml": "^2.0.0",
     "gulp-uglify": "^2.0.0",
     "merge-stream": "^1.0.1",
-    "polymer-analyzer": "2.0.0-alpha.40",
-    "polymer-bundler": "2.0.0-pre.13",
-    "polymer-build": "^1.1.0",
+    "polymer-build": "^1.2.0",
     "postcss-clean": "^1.0.2",
     "posthtml-minifier": "^0.1.0",
     "posthtml-postcss": "^0.2.4"
