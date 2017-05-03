@@ -85,25 +85,25 @@ function build() {
             presets: ["es2015-script"],
             plugins: ["array-includes"]
           })))
-          .pipe(gulpif(/\.js$/, uglify()))
-          // .pipe(gulpif(/\.css$/, cssSlam()))
-          .pipe(gulpif(/\.css$/, postcss([
-            // stylelint(),
-            autoprefixer(),
-            cleanCSS(cssOptions)
-          ])))
-          // .pipe(gulpif(/\.html$/, htmlMinifier()))
-          .pipe(gulpif(/\.html$/, posthtml([
-            posthtmlPostcss([
-              // stylelint({}),
-              autoprefixer(),
-              cleanCSS(cssOptions)
-            ]),
-            htmlmin({
-              collapseWhitespace: true,
-              removeComments: true
-            })
-          ])))
+//           .pipe(gulpif(/\.js$/, uglify()))
+//           // .pipe(gulpif(/\.css$/, cssSlam()))
+//           .pipe(gulpif(/\.css$/, postcss([
+//             // stylelint(),
+//             autoprefixer(),
+//             cleanCSS(cssOptions)
+//           ])))
+//           // .pipe(gulpif(/\.html$/, htmlMinifier()))
+//           .pipe(gulpif(/\.html$/, posthtml([
+//             posthtmlPostcss([
+//               // stylelint({}),
+//               autoprefixer(),
+//               cleanCSS(cssOptions)
+//             ]),
+//             htmlmin({
+//               collapseWhitespace: true,
+//               removeComments: true
+//             })
+//           ])))
           // Remember, you need to rejoin any split inline code when you're done.
           .pipe(sourcesStreamSplitter.rejoin());
 
